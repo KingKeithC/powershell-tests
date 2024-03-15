@@ -12,7 +12,7 @@ jobs:
       packages: write
     runs-on: windows-latest
     steps:
-      - with: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: Register GH Packages Repo
         run: |
           Register-PSResourceRepository `
