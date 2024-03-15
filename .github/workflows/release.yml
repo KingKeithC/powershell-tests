@@ -1,0 +1,35 @@
+name: Release Workflow
+
+on:
+  tags: ["v*"]
+
+jobs:
+  publish:
+    name: Publish to GitHub NuGet
+    permissions:
+      contents: read
+      packages: write
+    runs-on: windows-latest
+    steps:
+      - with: actions/checkout@v3
+      - name: Register GH Packages Repo
+        run: |
+          Register-PSResourceRepository `
+            -Name github `
+            -Uri "https://nuget.pkg.github.com/KingKeithC/index.json" `
+            -Trusted
+      - name: Set Module Version from Tag
+        run: |
+          $versionTag = ((git tag --points-at HEAD) -replace 'v', '')
+
+          Write-Output $versionTag
+
+          Update-ModuleManifest `
+            -Path TestModule/TestModule.psd1
+            -ModuleVersion $versionTag
+      - name: Publish Package
+        run: |
+            Publish-PSResource `
+              -Path ./TestModule/ `
+              -Repository github `
+              -ApiKey '${{ secrets.GITHUB_TOKEN }}'
