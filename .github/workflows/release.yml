@@ -7,9 +7,6 @@ on:
 jobs:
   publish:
     name: Publish to GitHub NuGet
-    permissions:
-      contents: read
-      packages: write
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -33,4 +30,4 @@ jobs:
             Publish-PSResource `
               -Path ./TestModule/ `
               -Repository github `
-              -ApiKey '${{ secrets.GITHUB_TOKEN }}'
+              -ApiKey '${{ secrets.DEPLOY_TOKEN }}'
